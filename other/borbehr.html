@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>BORBEHR — FUTURE IS HERE</title>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts: Outfit -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== сброс и переменные ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #050505;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* mesh gradient фон */
+    .mesh-gradient {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(147, 51, 234, 0.1) 0%, transparent 40%);
+      z-index: -1;
+    }
+
+    /* ===== PRELOADER ===== */
+    .preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #050505;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+      opacity: 1;
+      visibility: visible;
+    }
+    .preloader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .preloader-content {
+      text-align: center;
+    }
+    .preloader-logo {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto;
+      animation: pulseGlow 1.8s infinite ease-in-out;
+      filter: drop-shadow(0 0 20px #3b82f6);
+    }
+    .preloader-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+      background: rgba(255,255,255,0.03);
+      border: 4px solid rgba(255,255,255,0.05);
+    }
+    .preloader-text {
+      margin-top: 1rem;
+      font-size: 1.3rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      color: #aaa;
+      text-transform: uppercase;
+    }
+    .preloader-subtext {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 0.3rem;
+      letter-spacing: 1px;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 0.9; filter: drop-shadow(0 0 10px #3b82f6); }
+      50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 30px #3b82f6); }
+    }
+
+    /* ===== боковое меню (расширенное) ===== */
+    .side-menu {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 20px;
+      width: 70px;
+      background: rgba(20, 20, 20, 0.7);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 40px;
+      padding: 1.2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      z-index: 100;
+      transition: 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      max-height: 80vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #3b82f6 #1a1a1a;
+    }
+    .side-menu::-webkit-scrollbar {
+      width: 5px;
+    }
+    .side-menu::-webkit-scrollbar-track {
+      background: #1a1a1a;
+      border-radius: 10px;
+    }
+    .side-menu::-webkit-scrollbar-thumb {
+      background: #3b82f6;
+      border-radius: 10px;
+    }
+    .side-menu:hover {
+      border-color: rgba(59,130,246,0.3);
+      background: rgba(25,25,25,0.8);
+    }
+    .menu-item {
+      color: #aaa;
+      font-size: 1.5rem;
+      transition: 0.2s;
+      cursor: pointer;
+      position: relative;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .menu-item:hover {
+      color: #3b82f6;
+      transform: scale(1.15);
+    }
+    .menu-item[data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1a1a1a;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      border: 1px solid #3b82f6;
+      color: #fff;
+      letter-spacing: 1px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 200;
+    }
+    /* адаптация для мобильных: меню горизонтальное внизу */
+    @media (max-width: 900px) {
+      .side-menu {
+        top: auto;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: row;
+        width: auto;
+        max-width: 95vw;
+        padding: 0.8rem 1.2rem;
+        gap: 1.2rem;
+        border-radius: 50px;
+        backdrop-filter: blur(20px);
+        overflow-x: auto;
+        white-space: nowrap;
+        max-height: none;
+        justify-content: flex-start;
+      }
+      .menu-item[data-tooltip]:hover::after {
+        left: 50%;
+        top: -35px;
+        transform: translateX(-50%);
+      }
+    }
+    /* адаптация для совсем маленьких */
+    @media (max-width: 500px) {
+      .side-menu {
+        gap: 1rem;
+        padding: 0.6rem 1rem;
+      }
+      .menu-item {
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Стиль для надписи "официальная версия" в боковом меню */
+    .side-menu-note {
+      margin-top: 0.8rem;
+      font-size: 0.6rem;
+      text-align: center;
+      color: #9ca3af;
+      background: rgba(0,0,0,0.4);
+      border-radius: 30px;
+      padding: 0.4rem 0.6rem;
+      width: 90%;
+      backdrop-filter: blur(4px);
+      letter-spacing: 0.2px;
+      font-weight: 400;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .side-menu-note a {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+    .side-menu-note a:hover {
+      color: white;
+      text-decoration: underline;
+    }
+    @media (max-width: 900px) {
+      .side-menu-note {
+        font-size: 0.55rem;
+        padding: 0.2rem 0.5rem;
+        white-space: normal;
+        width: auto;
+        margin-top: 0;
+        margin-left: 0.5rem;
+      }
+    }
+
+    /* основной контейнер сдвинут, чтобы не перекрываться меню */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 1.5rem 1.5rem 100px;
+      transition: padding 0.3s;
+    }
+    @media (max-width: 900px) {
+      .main-wrapper {
+        padding: 1.5rem 1.5rem 80px 1.5rem;
+      }
+    }
+    .container {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    /* hero-карточка */
+    .hero-card {
+      background: linear-gradient(145deg, rgba(20,20,20,0.8), rgba(5,5,5,0.8));
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 40px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-card .glow {
+      position: absolute;
+      top: -6rem;
+      left: -6rem;
+      width: 20rem;
+      height: 20rem;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: 50%;
+      filter: blur(100px);
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 1.8rem;
+      background: rgba(255,255,255,0.03);
+      border: 4px solid rgba(255,255,255,0.05);
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 20px 30px -10px rgba(0,0,0,0.5);
+      animation: float 6s ease-in-out infinite;
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(to bottom, #fff, #aaa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+
+    .subhead {
+      font-size: 1.2rem;
+      color: #aaa;
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.8rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(12px);
+      color: white;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #3b82f6;
+      box-shadow: 0 0 25px rgba(59,130,246,0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(59,130,246,0.5);
+      transform: translateY(-2px);
+    }
+
+    /* стиль для официальной заметки в hero */
+    .official-note-hero {
+      margin-top: 1.8rem;
+      padding: 0.6rem 1rem;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(8px);
+      border-radius: 60px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: #cbd5e1;
+      border: 1px solid rgba(255,255,255,0.1);
+      letter-spacing: 0.3px;
+    }
+    .official-note-hero i {
+      font-size: 0.8rem;
+      color: #60a5fa;
+    }
+    .official-note-hero a {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px dashed #3b82f6;
+    }
+    .official-note-hero a:hover {
+      color: white;
+      border-bottom-color: white;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .bento-item {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 24px;
+      padding: 1.5rem;
+      transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+      text-decoration: none;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .bento-item:hover {
+      border-color: rgba(59,130,246,0.4);
+      background: rgba(255,255,255,0.04);
+      transform: scale(1.02);
+    }
+
+    .bento-icon {
+      font-size: 2.2rem;
+      margin-bottom: 0.8rem;
+      color: #3b82f6;
+    }
+
+    .bento-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #666;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .bento-value {
+      font-size: 1.2rem;
+      font-weight: 600;
+      word-break: break-word;
+    }
+
+    .skills-container {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 24px;
+      padding: 1.8rem;
+      margin-top: 2rem;
+    }
+
+    .skills-title {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .skill-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .skill-name {
+      min-width: 100px;
+      font-weight: 500;
+      color: #ccc;
+    }
+
+    .skill-bar-bg {
+      flex: 1;
+      height: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      border-radius: 20px;
+      width: 0%;
+      box-shadow: 0 0 10px #3b82f6;
+    }
+
+    .skill-percent {
+      min-width: 45px;
+      text-align: right;
+      color: #aaa;
+      font-weight: 300;
+    }
+
+    /* заголовок проектов с кнопкой обновления */
+    .projects-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .projects-header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .refresh-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #aaa;
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .refresh-btn:hover {
+      background: rgba(59,130,246,0.2);
+      border-color: #3b82f6;
+      color: white;
+    }
+    .refresh-btn i {
+      font-size: 1rem;
+    }
+
+    .repo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .repo-card {
+      background: rgba(20,20,20,0.6);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 20px;
+      padding: 1.3rem;
+      backdrop-filter: blur(10px);
+      transition: 0.2s;
+      border-left: 4px solid #3b82f6;
+    }
+
+    .repo-card:hover {
+      background: rgba(30,30,30,0.8);
+      border-color: rgba(59,130,246,0.4);
+      transform: translateY(-4px);
+    }
+
+    .repo-name {
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .repo-name a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .repo-name a:hover {
+      color: #3b82f6;
+    }
+
+    .repo-desc {
+      color: #999;
+      font-size: 0.9rem;
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
+    }
+
+    .repo-meta {
+      display: flex;
+      gap: 1.2rem;
+      font-size: 0.85rem;
+      color: #777;
+    }
+
+    .repo-meta i {
+      margin-right: 0.2rem;
+    }
+
+    .status-message {
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 1.5rem;
+      text-align: center;
+      color: #aaa;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      text-align: center;
+      color: #444;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+    }
+    .footer-note {
+      margin-top: 0.8rem;
+      font-size: 0.6rem;
+      letter-spacing: normal;
+      text-transform: none;
+      font-weight: 400;
+      color: #6b7280;
+      background: rgba(0,0,0,0.3);
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      backdrop-filter: blur(4px);
+    }
+    .footer-note a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+    .footer-note a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2.5rem; }
+      .avatar { width: 90px; height: 90px; }
+      .btn { padding: 0.8rem 1.5rem; }
+      .preloader-logo { width: 100px; height: 100px; }
+      .official-note-hero { font-size: 0.65rem; padding: 0.4rem 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- PRELOADER (виден минимум 5 секунд) -->
+  <div id="preloader" class="preloader">
+    <div class="preloader-content">
+      <div class="preloader-logo">
+        <img src="https://cdn.discordapp.com/avatars/1472288918496870503/421e25be976509128490c2b36ee3ef97.png" alt="avatar">
+      </div>
+      <div class="preloader-text">borBeHR Site loading....</div>
+      <div class="preloader-subtext">Please wait....</div>
+    </div>
+  </div>
+
+  <div class="mesh-gradient"></div>
+
+  <!-- Боковое меню (расширенное) + добавлена заметка об официальной версии -->
+  <nav class="side-menu">
+    <a href="#" class="menu-item" data-tooltip="Главная"><i class="fas fa-home"></i></a>
+    <a href="#projects" class="menu-item" data-tooltip="Проекты"><i class="fas fa-code-branch"></i></a>
+    <a href="#skills" class="menu-item" data-tooltip="Навыки"><i class="fas fa-crown"></i></a>
+    <a href="#contacts" class="menu-item" data-tooltip="Контакты"><i class="fas fa-address-card"></i></a>
+    <a href="https://t.me/borBeHR" target="_blank" class="menu-item" data-tooltip="Telegram"><i class="fab fa-telegram"></i></a>
+    <a href="https://discord.com/users/borbehr" target="_blank" class="menu-item" data-tooltip="Discord"><i class="fab fa-discord"></i></a>
+    <a href="https://www.youtube.com/@borBeHR" target="_blank" class="menu-item" data-tooltip="YouTube"><i class="fab fa-youtube"></i></a>
+    <a href="https://vk.com/veniamingress" target="_blank" class="menu-item" data-tooltip="VK"><i class="fab fa-vk"></i></a>
+    <a href="https://guns.lol/borbehr" target="_blank" class="menu-item" data-tooltip="Guns.lol"><i class="fas fa-skull"></i></a>
+    <a href="https://github.com/borBeHR" target="_blank" class="menu-item" data-tooltip="GitHub"><i class="fab fa-github"></i></a>
+    <!-- НАДПИСЬ ОФИЦИАЛЬНАЯ ВЕРСИЯ внутри меню (почти везде) -->
+    <div class="side-menu-note">
+      <i class="fas fa-info-circle" style="font-size: 0.55rem;"></i> No official ver, official: <a href="https://borbehr.pages.dev" target="_blank" rel="noopener">borbehr.pages.dev</a>
+    </div>
+  </nav>
+
+  <div class="main-wrapper">
+    <div class="container">
+      <!-- HERO секция -->
+      <div class="hero-card">
+        <div class="glow"></div>
+        <div class="avatar">
+          <img src="https://cdn.discordapp.com/avatars/1472288918496870503/421e25be976509128490c2b36ee3ef97.png" alt="borBeHR avatar">
+        </div>
+        <h1>Вениамин | borBeHR</h1>
+        <div class="subhead">код · контент · креатив</div>
+
+        <div class="button-group">
+          <a href="https://t.me/borBeHR" target="_blank" class="btn btn-primary">
+            <i class="fab fa-telegram"></i> @borBeHR
+          </a>
+          <a href="https://github.com/borBeHR" target="_blank" class="btn btn-outline">
+            <i class="fab fa-github"></i> GitHub
+          </a>
+          <a href="https://guns.lol/borbehr" target="_blank" class="btn btn-outline">
+            <i class="fas fa-crosshairs"></i> guns.lol
+          </a>
+        </div>
+
+        <!-- ЗАМЕТКА: No official version / official version: borbehr.pages.dev в hero-карточке -->
+        <div class="official-note-hero">
+          <i class="fas fa-exclamation-triangle"></i> No official version, official version: 
+          <a href="https://borbehr.pages.dev" target="_blank" rel="noopener">borbehr.pages.dev</a>
+        </div>
+      </div>
+
+      <!-- БЕНТО сетка (контакты и соцсети) -->
+      <div class="bento-grid" id="contacts">
+        <a href="https://t.me/borBeHR" target="_blank" class="bento-item">
+          <i class="fab fa-telegram bento-icon"></i>
+          <div class="bento-label">Telegram</div>
+          <div class="bento-value">@borBeHR</div>
+        </a>
+        <div class="bento-item">
+          <i class="fab fa-discord bento-icon" style="color: #5865f2;"></i>
+          <div class="bento-label">Discord</div>
+          <div class="bento-value">borbehr</div>
+        </div>
+        <a href="https://github.com/borBeHR" target="_blank" class="bento-item">
+          <i class="fab fa-github bento-icon"></i>
+          <div class="bento-label">GitHub</div>
+          <div class="bento-value">borBeHR</div>
+        </a>
+        <a href="https://t.me/veniamin2014_tg" target="_blank" class="bento-item">
+          <i class="fas fa-paper-plane bento-icon" style="color: #229ed9;"></i>
+          <div class="bento-label">Основной TGK</div>
+          <div class="bento-value">@veniamin2014_tg</div>
+        </a>
+        <a href="https://t.me/notfound404_info" target="_blank" class="bento-item">
+          <i class="fas fa-info-circle bento-icon"></i>
+          <div class="bento-label">Инфо тгк</div>
+          <div class="bento-value">notfound404_info</div>
+        </a>
+        <a href="https://www.youtube.com/@borBeHR" target="_blank" class="bento-item">
+          <i class="fab fa-youtube bento-icon" style="color: #ff0000;"></i>
+          <div class="bento-label">YouTube</div>
+          <div class="bento-value">@borBeHR</div>
+        </a>
+        <div class="bento-item" style="opacity: 0.6;">
+          <i class="fab fa-tiktok bento-icon"></i>
+          <div class="bento-label">TikTok</div>
+          <div class="bento-value">Скоро</div>
+        </div>
+        <a href="https://vk.com/veniamingress" target="_blank" class="bento-item">
+          <i class="fab fa-vk bento-icon" style="color: #4a76a8;"></i>
+          <div class="bento-label">ВКонтакте</div>
+          <div class="bento-value">редко / Украина</div>
+        </a>
+        <a href="https://guns.lol/borbehr" target="_blank" class="bento-item">
+          <i class="fas fa-skull bento-icon"></i>
+          <div class="bento-label">Guns.lol</div>
+          <div class="bento-value">borbehr</div>
+        </a>
+      </div>
+
+      <!-- ПРОЕКТЫ: репозитории GitHub с кнопкой обновления -->
+      <div style="margin-top: 2.5rem;" id="projects">
+        <div class="projects-header">
+          <div class="projects-header-left">
+            <i class="fas fa-code-branch" style="color: #3b82f6; font-size: 1.8rem;"></i>
+            <h2 style="font-weight: 600; font-size: 1.8rem;">Проекты на GitHub</h2>
+          </div>
+          <button class="refresh-btn" id="refresh-repos"><i class="fas fa-sync-alt"></i> Обновить</button>
+        </div>
+        <div id="repos-container" class="repo-grid">
+          <div class="status-message">
+            <i class="fas fa-spinner fa-pulse"></i> Загружаем репозитории...
+          </div>
+        </div>
+      </div>
+
+      <!-- НАВЫКИ -->
+      <div class="skills-container" id="skills">
+        <div class="skills-title">
+          <i class="fas fa-crown" style="color: #fbbf24;"></i>
+          <span>Мои навыки</span>
+        </div>
+
+        <div class="skill-item">
+          <span class="skill-name">Windows</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:99%"></div></div>
+          <span class="skill-percent">99%</span>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">C#</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:100%"></div></div>
+          <span class="skill-percent">100%</span>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">Python</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:100%"></div></div>
+          <span class="skill-percent">100%</span>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">JavaScript</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:60%"></div></div>
+          <span class="skill-percent">60%</span>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">Linux</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:20%"></div></div>
+          <span class="skill-percent">20%</span>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">MySQL</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:60%"></div></div>
+          <span class="skill-percent">60%</span>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">PHP</span>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:50%"></div></div>
+          <span class="skill-percent">50%</span>
+        </div>
+      </div>
+
+      <!-- иконки соцсетей -->
+      <div style="display: flex; justify-content: center; gap: 1rem; margin: 2rem 0 1rem;">
+        <a href="https://www.youtube.com/@borBeHR" target="_blank" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; color: white; transition: 0.2s;">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://vk.com/veniamingress" target="_blank" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; color: white; transition: 0.2s;">
+          <i class="fab fa-vk"></i>
+        </a>
+        <a href="https://github.com/borBeHR" target="_blank" style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; color: white; transition: 0.2s;">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+
+      <div class="footer">
+        © 2026 Вениамин | borBeHR — future is here
+        <div class="footer-note">
+          <i class="fas fa-globe"></i> No official version, official: <a href="https://borbehr.pages.dev" target="_blank" rel="noopener">borbehr.pages.dev</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const container = document.getElementById('repos-container');
+      const username = 'borBeHR';
+      const preloader = document.getElementById('preloader');
+
+      // Функция загрузки репозиториев (возвращает промис)
+      async function fetchRepos() {
+        try {
+          const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=20`);
+          if (!response.ok) throw new Error(`GitHub API: ${response.status}`);
+          const repos = await response.json();
+
+          if (!repos.length) {
+            container.innerHTML = '<div class="status-message">📭 Публичных репозиториев пока нет</div>';
+          } else {
+            repos.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+            const cards = repos.map(repo => {
+              const desc = repo.description || '—';
+              const updated = new Date(repo.updated_at).toLocaleDateString('ru-RU', { month: 'short', day: 'numeric', year: 'numeric' });
+              return `
+                <div class="repo-card">
+                  <div class="repo-name">
+                    <a href="${repo.html_url}" target="_blank" rel="noopener">${repo.name}</a>
+                  </div>
+                  <div class="repo-desc">${desc}</div>
+                  <div class="repo-meta">
+                    <span><i class="fas fa-star"></i> ${repo.stargazers_count}</span>
+                    <span><i class="fas fa-code-branch"></i> ${repo.forks_count}</span>
+                    <span><i class="far fa-calendar-alt"></i> ${updated}</span>
+                  </div>
+                </div>
+              `;
+            }).join('');
+            container.innerHTML = cards;
+          }
+        } catch (err) {
+          container.innerHTML = `<div class="status-message" style="color: #f87171;">❌ Ошибка загрузки: ${err.message}</div>`;
+        }
+      }
+
+      // Таймер на 5 секунд
+      const timerPromise = new Promise(resolve => setTimeout(resolve, 5000));
+
+      // Первоначальная загрузка + таймер
+      Promise.all([fetchRepos(), timerPromise]).then(() => {
+        if (preloader) preloader.classList.add('hidden');
+      });
+
+      // Кнопка обновления (без перезагрузки страницы)
+      document.getElementById('refresh-repos').addEventListener('click', function(e) {
+        e.preventDefault();
+        container.innerHTML = '<div class="status-message"><i class="fas fa-spinner fa-pulse"></i> Обновление...</div>';
+        fetchRepos();
+      });
+
+      // Плавный скролл для якорей меню
+      document.querySelectorAll('.menu-item[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+          }
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
