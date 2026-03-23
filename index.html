@@ -3,123 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сайт в разработке</title>
+    <title>Explorer Android Dev | Projects</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg: #1a1a1a;
+            --container: #202020;
+            --card: #2b2b2b;
+            --accent: #00ffcc;
+            --text: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif;
+            margin: 0;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 40px 20px;
         }
 
         .container {
-            max-width: 600px;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            transition: transform 0.3s ease;
+            max-width: 1000px;
+            background: var(--container);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
         }
 
-        .container:hover {
-            transform: translateY(-5px);
+        h1 { color: var(--accent); font-weight: 600; margin-top: 0; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            color: #333;
-            margin-bottom: 15px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .message {
-            font-size: 1.2rem;
-            color: #666;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
-        .github-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: #24292e;
-            color: white;
+        .project-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
             text-decoration: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            color: var(--text);
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100px;
         }
 
-        .github-btn:hover {
-            background: #2c3e50;
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        .project-card:hover {
+            border-color: var(--accent);
+            background: #353535;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 204, 0.1);
         }
 
-        .github-btn:active {
-            transform: scale(0.95);
+        .project-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            word-break: break-all;
         }
 
-        .github-icon {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 30px 20px;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            .message {
-                font-size: 1rem;
-            }
-            .github-btn {
-                padding: 12px 30px;
-                font-size: 1rem;
-            }
-        }
+        .loading { color: var(--accent); font-style: italic; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚧 Сайт в разработке</h1>
-        <p class="message">
-            Извините, сайт ещё не готов. Но вы уже сейчас можете заглянуть на мой GitHub,<br>
-            чтобы следить за новыми проектами.
-        </p>
-        <a href="https://github.com/explorer-android-dev" target="_blank" rel="noopener noreferrer" class="github-btn">
-            <!-- Иконка GitHub (простая, без внешних библиотек) -->
-            <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.205 11.387.6.113.82-.26.82-.58 0-.287-.01-1.05-.015-2.06-3.338.726-4.042-1.61-4.042-1.61-.546-1.39-1.335-1.76-1.335-1.76-1.09-.746.082-.73.082-.73 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.776.418-1.306.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.235-3.22-.123-.3-.535-1.52.117-3.16 0 0 1.008-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.64.24 2.86.118 3.16.768.84 1.233 1.91 1.233 3.22 0 4.61-2.804 5.62-5.476 5.92.43.37.824 1.1.824 2.22 0 1.602-.015 2.894-.015 3.287 0 .322.216.698.83.578C20.565 21.795 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
-            </svg>
-            Мой GitHub
-        </a>
-        <p style="margin-top: 25px; color: #999; font-size: 0.9rem;">
-            explorer-android-dev
-        </p>
+
+<div class="container">
+    <h1>System / Projects</h1>
+    <p>Автоматический список репозиториев из папки <code>/projects</code></p>
+    
+    <div id="projects-grid" class="grid">
+        <div class="loading">Сканирование директории...</div>
     </div>
+</div>
+
+<script>
+    // НАСТРОЙКИ (поменяй на свои)
+    const username = 'explorer-android-dev';
+    const repo = 'explorer-android-dev.github.io';
+    const folderPath = 'projects';
+
+    async function fetchProjects() {
+        const grid = document.getElementById('projects-grid');
+        
+        try {
+            // Стучимся в GitHub API, чтобы получить содержимое папки
+            const response = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${folderPath}`);
+            const data = await response.json();
+
+            grid.innerHTML = ''; // Очищаем лоадер
+
+            if (!Array.isArray(data)) {
+                grid.innerHTML = '<div>Папка проектов пуста или не найдена.</div>';
+                return;
+            }
+
+            // Фильтруем только папки (dir)
+            const folders = data.filter(item => item.type === 'dir');
+
+            folders.forEach(project => {
+                const card = document.createElement('a');
+                card.className = 'project-card';
+                // Твоя ссылка: https://explorer-android-dev.github.io/projects/имя_папки
+                card.href = `https://${username}.github.io/${folderPath}/${project.name}`;
+                
+                card.innerHTML = `
+                    <div class="project-name">📂 ${project.name}</div>
+                `;
+                
+                grid.appendChild(card);
+            });
+
+        } catch (error) {
+            console.error(error);
+            grid.innerHTML = '<div style="color: red;">Ошибка API: Проверь название репозитория или лимиты GitHub.</div>';
+        }
+    }
+
+    fetchProjects();
+</script>
+
 </body>
 </html>
